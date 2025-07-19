@@ -47,4 +47,27 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            emailext(
+                subject: "✅ Jenkins Build Success - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """<p>Great news!</p>
+                         <p>Job <b>${env.JOB_NAME}</b> build <b>#${env.BUILD_NUMBER}</b> completed successfully.</p>
+                         <p><a href="${env.BUILD_URL}">View Build Details</a></p>""",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                to: 'hello@shounak.me'
+            )
+        }
+        failure {
+            emailext(
+                subject: "❌ Jenkins Build Failed - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """<p>Unfortunately, the build has failed.</p>
+                         <p>Job <b>${env.JOB_NAME}</b> build <b>#${env.BUILD_NUMBER}</b> failed.</p>
+                         <p><a href="${env.BUILD_URL}">View Build Logs</a></p>""",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                to: 'hello@shounak.me'
+            )
+        }
+    }
 }
